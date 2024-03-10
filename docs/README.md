@@ -69,7 +69,9 @@ Each number represents the likelihood that an event happens. For example, `wolf_
 
 The simulation progresses in cycles, where each cycle involves randomly selecting a grid cell and executing the behavior logic for the entity in that cell. This process includes movement, eating, potential starvation, reproduction, and overcrowding checks.
 
-The simulation continues as long as there are wolves or sheep present in the grid, reflecting an ongoing ecosystem. However, if one species goes extinct, the dynamics change significantly, demonstrating the interdependence of species within ecosystems.
+The simulation continues as long as there are **BOTH** wolves and sheep present in the grid, reflecting an ongoing ecosystem. However, if one species goes extinct, the dynamics change significantly, demonstrating the interdependence of species within ecosystems.
+
+In the case the sheep goes extinct, the wolves cannot find prey to eat, and therefore will eventually go extinct. However, assuming that plants will never go extinct (the case is very rare), the sheep can still coexist alongside the plants in an equilibrium.
 
 ## Simulation Environment Variations
 
@@ -111,3 +113,53 @@ This configuration simulates an environment where prey is abundant, potentially 
 ## Conclusion
 
 This algorithm offers a simplified yet insightful representation of predator-prey dynamics, illustrating how individual behaviors can lead to complex system-level behaviors in ecology. By adjusting parameters like spawn probabilities and starvation chances, users can explore different ecological scenarios, gaining a deeper understanding of the delicate balance within natural ecosystems.
+
+## How the code works!
+
+### Helper Function
+
+| has_adjacent(x, y, target)
+
+![has_adjacent()](./images/has_adjacent.png)
+
+This methods takes in a coordinate x, y and a target to checks whether there are any matching targets around the block. Imagine you are in the centre of a 3X3 grid, we check the surrounding 8 blocks for any that matches the target. The target can either be **grass, sheep or wolf**. It returns True if target exists, else False. As shown below:
+
+![grid](./images/grid.png)
+
+| is_overcroweded(x, y)
+
+![is_overcrowded()](./images/is_overcrowded.png)
+
+This method takes in coordinates x, y and checks if there are more than 3 wolves **OR** sheep in the surrounding blocks. If condition is fulfilled, it will return True, else False.
+
+| set_adjacent(x, y, target, source)
+
+![set_adjacent()](./images/set_adjacent.png)
+
+This method takes in coordinates x, y as well as the target and source. It checks if any surrounding blocks match the source and replaces it with target. It does this by checking through every surrounding block and appending the coordinate of the blocks that match source into a list. The index is then randomised to pick a random valid source to be replaced with target. This allows the animals (wolf/sheep) to perform a random walk. Returns True is random walk is succesful, else False.
+
+### Main Algorithm
+
+![main program intro](./images/main_intro.png)
+
+- First, we initialise a cycle variable to count the number of time the loop has ran. Then we have a while loop that checks if there are any wolf **AND** any sheep, the algorithm only stops once one species has gone extinct.
+
+- For each run loop, we set a random coordinate x, y and simulates any action on that grid, if it was a wolf or a sheep.
+
+![wolf program](./images/wolf.png)
+
+- This section of code will be ran if the block is a wolf.
+- First, we set the current block to become grass, since the wolf will likely die or move to another block after the loop.
+- We then check if there is overcrowding using the `is_overcrowded()` helper function.
+- We also check if there is food nearby using the `has_adjacent()` helper function, and we proceed starve if we do not have food. There is a probability here that the wolf will die.
+- If there is food, then the wolf will move to the sheep block to consume it. The sheep will be eaten and number of sheep will decrease by 1.
+- Next, if the wolf is next to another wolf, there is a chance for it reproduce. If reproduction is successful, a wolf will be added to a adjacent grass block.
+
+![sheep program](./images/sheep.png)
+
+- This section of code will be ran if the block is a sheep.
+- First, we set the current block to become grass, since the sheep will likely die or move to another block after the loop.
+- We then check if there is overcrowding using the `is_overcrowded()` helper function.
+- We also check if there is food nearby using the `has_adjacent()` helper function, and we proceed starve if we do not have food. There is a probability here that the sheep will die.
+- If there is food, then the sheep will move to the grass block to consume it.
+- Next, if the sheep is next to another sheep, there is a chance for it reproduce. If reproduction is successful, a sheep will be added to a adjacent grass block.
