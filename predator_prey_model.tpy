@@ -1,0 +1,147 @@
+# Set up map dimensions and colors
+width=20
+height=20
+wolf=black
+sheep=white
+grass=darkgreen
+overcrowding_death=True
+
+# Initialize counts
+num_wolves=0
+num_sheep=0
+
+# Set up probabilities
+wolf_initial_spawn=5 # Probability of initially spawning wolf
+sheep_initial_spawn=20 # Probability of initially spawning sheep
+wolf_reproduction_prob=5  # Probability of wolf reproduction
+sheep_reproduction_prob=15  # Probability of sheep reproduction
+wolf_starvation_chance=80  # Chance of wolf dying if not eating
+sheep_starvation_chance=80  # Chance of sheep dying if not eating
+
+# Initialize map
+canvas(0, 0, width, height)
+resolution(width, height)
+
+# Populate the map randomly with wolves, sheep, and grass
+noupdate()
+for x in range(width):
+    for y in range(height):
+        # Randomly choose what to place: empty, wolf, sheep, or grass
+        if randrange(100) < wolf_initial_spawn: 
+            pixset(x, y, wolf)
+            num_wolves += 1
+        elif randrange(100) < sheep_initial_spawn:
+            pixset(x, y, sheep)
+            num_sheep += 1
+        else:
+            pixset(x, y, grass)
+update()
+
+# Helper function to check if there are any adjacent targets
+def has_adjacent(x, y, target):
+    r = [-1,0,1]
+    for i in r:
+        for j in r:
+            if (i != 0) or (j != 0):
+                nx =(x + i)
+                ny =(y + j)
+                print("Checking adjacent for has_adjacent at (", nx, ", ", ny, ")")  # Debugging statement
+                if (0 <= nx) and (nx < width) and (0 <= ny) and (ny < height):
+                    if pixcol(nx, ny) == target:
+                        return True
+    return False
+
+# Helper function to set a pixel from source to target with current position
+def set_adjacent(x, y, target, source):
+    r = [-1,0,1]
+    for i in r:
+        for j in r:
+            if (i != 0) or (j != 0):
+                nx =(x + i)
+                ny =(y + j)
+                print("Setting adjacent for set_adjacent at (", nx, ", ", ny, ")")  # Debugging statement
+                if (0 <= nx) and (nx < width) and (0 <= ny) and (ny < height):
+                    if pixcol(nx, ny) == source:
+                        pixset(nx, ny, target) # set new state
+                        return True
+    return False
+
+# Checks if there are more than 3 wolves or 3 sheep in the adjacent cells, if there is the cell dies
+def is_overcrowded(x, y):
+    r = [-1,0,1]
+    wolves = 0
+    sheep = 0
+    for i in r:
+        for j in r:
+            if (i != 0) and (j != 0):
+                nx =(x + i)
+                ny =(y + j)
+                print("Checking for overcrowding at (", nx, ", ", ny, ")")  # Debugging statement
+                if (0 <= nx) and (nx < width) and (0 <= ny) and (ny < height):
+                    if pixcol(nx, ny) == wolf:
+                        wolves += 1
+                    elif pixcol(nx, ny) == sheep:
+                        sheep += 1
+    if (wolves > 3) or (sheep > 3):
+        return True
+    return False
+
+# Main program
+cycle=0
+while (num_sheep > 0) or (num_wolves > 0):
+    #print(cycle)
+    # Pick a random cell
+    x = randrange(width)
+    y = randrange(height)
+
+    # If it's a wolf, it may reproduce or eat a sheep or die
+    if pixcol(x, y) == wolf:
+
+        # Check for overcrowding
+        if (overcrowding_death) and (is_overcrowded(x, y)):
+            pixset(x, y, grass)
+            num_sheep -= 1
+
+        # If there is no food nearby (no sheep)
+        if not has_adjacent(x, y, sheep):
+            # Check for starvation
+            if randrange(100) < wolf_starvation_chance:
+                pixset(x, y, grass)
+                num_wolves -= 1
+        else:
+            # Wolf tries to eat sheep
+            set_adjacent(x, y, wolf, sheep)
+            num_sheep -= 1
+
+            # since there is food, the wolf can try to reproduce
+            if has_adjacent(x, y, wolf):
+                # if reproduction successful and there is empty grass
+                if (randrange(100) < wolf_reproduction_prob) and has_adjacent(x, y, grass):
+                    success = set_adjacent(x, y, wolf, grass)
+                    if success:
+                        num_wolves += 1
+
+    # If it's a sheep, it may reproduce or eat grass or die
+    if pixcol(x, y) == sheep:
+
+        # Check for overcrowding
+        if (overcrowding_death) and (is_overcrowded(x, y)):
+            pixset(x, y, grass)
+            num_sheep -= 1
+            
+        if not has_adjacent(x, y, sheep):
+            # Check for starvation
+            if randrange(100) < sheep_starvation_chance:
+                pixset(x, y, grass)
+                num_sheep -= 1
+
+        else:
+            set_adjacent(x, y, sheep, grass)
+            # if reproduction successful and there is empty grass
+            if (randrange(100) < sheep_reproduction_prob) and has_adjacent(x, y, grass):
+                success = set_adjacent(x, y, sheep, grass)
+                if success:
+                    num_sheep += 1
+            
+        # Update the canvas
+        cycle=cycle+1
