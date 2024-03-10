@@ -4,19 +4,21 @@ height=20
 wolf=black
 sheep=white
 grass=darkgreen
-overcrowding_death=True
 
 # Initialize counts
 num_wolves=0
 num_sheep=0
 
-# Set up probabilities
+# Set up probabilities (change it as you like to see different simulations)
 wolf_initial_spawn=3 # Probability of initially spawning wolf
 sheep_initial_spawn=25 # Probability of initially spawning sheep
+
 wolf_reproduction_prob=20  # Probability of wolf reproduction
 sheep_reproduction_prob=15  # Probability of sheep reproduction
 wolf_starvation_chance=15  # Chance of wolf dying if not eating
 sheep_starvation_chance=5  # Chance of sheep dying if not eating
+
+overcrowding_death=True # True if overcrowding can cause deaths
 
 # Initialize map
 canvas(0, 0, width, height)
