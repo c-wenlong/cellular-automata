@@ -24,9 +24,9 @@ The simulation environment is a **20x20 grid** where each cell can contain a wol
 - Wolves have a _ws%_ chance of dying from starvation if it does not eat a sheep. You can change _ws_ to fit your demostration.
 - Sheep have a _ss%_ chance of dying from starvation if it does not eat grass. You can change _ss_ to fit your demostration.
 
-| Overcroawding
+| Overcrowding
 
-- Wolves and Sheep can die from overcrowding. You can set `overcrowding_death` to `False` to remove deaths from overcrowding.
+- Wolves and Sheep can die from overcrowding. You can set `overcrowding_death` to False to remove deaths from overcrowding.
 
 This setup creates a diverse environment where the initial number of entities varies with each simulation run, introducing variability and mimicking natural ecosystems' unpredictability.
 
