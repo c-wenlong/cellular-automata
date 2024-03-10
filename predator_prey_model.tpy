@@ -11,12 +11,12 @@ num_wolves=0
 num_sheep=0
 
 # Set up probabilities
-wolf_initial_spawn=5 # Probability of initially spawning wolf
-sheep_initial_spawn=20 # Probability of initially spawning sheep
-wolf_reproduction_prob=5  # Probability of wolf reproduction
+wolf_initial_spawn=3 # Probability of initially spawning wolf
+sheep_initial_spawn=25 # Probability of initially spawning sheep
+wolf_reproduction_prob=20  # Probability of wolf reproduction
 sheep_reproduction_prob=15  # Probability of sheep reproduction
-wolf_starvation_chance=80  # Chance of wolf dying if not eating
-sheep_starvation_chance=80  # Chance of sheep dying if not eating
+wolf_starvation_chance=15  # Chance of wolf dying if not eating
+sheep_starvation_chance=5  # Chance of sheep dying if not eating
 
 # Initialize map
 canvas(0, 0, width, height)
@@ -45,7 +45,7 @@ def has_adjacent(x, y, target):
             if (i != 0) or (j != 0):
                 nx =(x + i)
                 ny =(y + j)
-                print("Checking adjacent for has_adjacent at (", nx, ", ", ny, ")")  # Debugging statement
+                #print("Checking adjacent for has_adjacent at (", nx, ", ", ny, ")")  # Debugging statement
                 if (0 <= nx) and (nx < width) and (0 <= ny) and (ny < height):
                     if pixcol(nx, ny) == target:
                         return True
@@ -59,7 +59,7 @@ def set_adjacent(x, y, target, source):
             if (i != 0) or (j != 0):
                 nx =(x + i)
                 ny =(y + j)
-                print("Setting adjacent for set_adjacent at (", nx, ", ", ny, ")")  # Debugging statement
+                #print("Setting adjacent for set_adjacent at (", nx, ", ", ny, ")")  # Debugging statement
                 if (0 <= nx) and (nx < width) and (0 <= ny) and (ny < height):
                     if pixcol(nx, ny) == source:
                         pixset(nx, ny, target) # set new state
@@ -76,7 +76,7 @@ def is_overcrowded(x, y):
             if (i != 0) and (j != 0):
                 nx =(x + i)
                 ny =(y + j)
-                print("Checking for overcrowding at (", nx, ", ", ny, ")")  # Debugging statement
+                #print("Checking for overcrowding at (", nx, ", ", ny, ")")  # Debugging statement
                 if (0 <= nx) and (nx < width) and (0 <= ny) and (ny < height):
                     if pixcol(nx, ny) == wolf:
                         wolves += 1
@@ -89,14 +89,13 @@ def is_overcrowded(x, y):
 # Main program
 cycle=0
 while (num_sheep > 0) or (num_wolves > 0):
-    #print(cycle)
     # Pick a random cell
     x = randrange(width)
     y = randrange(height)
 
     # If it's a wolf, it may reproduce or eat a sheep or die
     if pixcol(x, y) == wolf:
-
+    
         # Check for overcrowding
         if (overcrowding_death) and (is_overcrowded(x, y)):
             pixset(x, y, grass)
@@ -110,7 +109,7 @@ while (num_sheep > 0) or (num_wolves > 0):
                 num_wolves -= 1
         else:
             # Wolf tries to eat sheep
-            set_adjacent(x, y, wolf, sheep)
+            set_adjacent(x, y, grass, sheep)
             num_sheep -= 1
 
             # since there is food, the wolf can try to reproduce
@@ -120,7 +119,8 @@ while (num_sheep > 0) or (num_wolves > 0):
                     success = set_adjacent(x, y, wolf, grass)
                     if success:
                         num_wolves += 1
-
+        #print(cycle, ": ","wolves :", num_wolves,", sheep: ",num_sheep)
+         
     # If it's a sheep, it may reproduce or eat grass or die
     if pixcol(x, y) == sheep:
 
@@ -136,12 +136,15 @@ while (num_sheep > 0) or (num_wolves > 0):
                 num_sheep -= 1
 
         else:
+            # Sheep eats grass
             set_adjacent(x, y, sheep, grass)
+            
             # if reproduction successful and there is empty grass
             if (randrange(100) < sheep_reproduction_prob) and has_adjacent(x, y, grass):
                 success = set_adjacent(x, y, sheep, grass)
                 if success:
                     num_sheep += 1
-            
-        # Update the canvas
-        cycle=cycle+1
+        #print(cycle, ": ","wolves :", num_wolves,", sheep: ",num_sheep)
+         
+    # Update the canvas
+    cycle=cycle+1
