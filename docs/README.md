@@ -73,7 +73,7 @@ The simulation continues as long as there are **BOTH** wolves and sheep present 
 
 In the case the sheep goes extinct, the wolves cannot find prey to eat, and therefore will eventually go extinct. However, assuming that plants will never go extinct (the case is very rare), the sheep can still coexist alongside the plants in an equilibrium.
 
-## Simulation Environment Variations
+## Simulation Environment Variations && Expected Outcome
 
 To explore different ecological dynamics, we can adjust the simulation parameters. Here are three sets of values designed to simulate various environmental conditions:
 
@@ -97,7 +97,7 @@ This configuration aims to create a balanced ecosystem where both predator and p
 - `wolf_starvation_chance`: 30% - A higher chance of wolf starvation due to increased competition.
 - `sheep_starvation_chance`: 20% - An increased chance of sheep starvation as they are more likely to be preyed upon.
 
-This set represents an environment where predators are more dominant, potentially leading to rapid prey depletion and higher starvation risks for predators.
+This set represents an environment where predators are more dominant, leading to rapid prey depletion and higher starvation risks for predators, eventually, the wolves will be wiped out.
 
 ### Set 3: Prey-Heavy Environment
 
@@ -108,7 +108,7 @@ This set represents an environment where predators are more dominant, potentiall
 - `wolf_starvation_chance`: 10% - A lower chance of wolf starvation due to abundant prey.
 - `sheep_starvation_chance`: 5% - A lower chance of sheep starvation, assuming grass is plentiful.
 
-This configuration simulates an environment where prey is abundant, potentially leading to overgrazing and subsequent challenges for the prey population.
+This configuration simulates an environment where prey is abundant. But the predator population is too small, the predator eventually dies.
 
 ## Conclusion
 
