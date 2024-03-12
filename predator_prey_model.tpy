@@ -15,6 +15,7 @@ sheep_initial_spawn=40 # Probability of initially spawning sheep
 
 wolf_reproduction_prob=100  # Probability of wolf reproduction
 sheep_reproduction_prob=50  # Probability of sheep reproduction
+
 wolf_starvation_chance=80  # Chance of wolf dying if not eating
 sheep_starvation_chance=10  # Chance of sheep dying if not eating
 
