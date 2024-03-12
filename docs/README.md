@@ -1,5 +1,11 @@
 # Explanation of the Predator-Prey Simulation Algorithm
 
+## Important Note
+
+The algo runs much better in the 14.45 version of the Turtles System than the 14.47 version of the Turtles System, for reasons unknown to me. Here, there is a demo of the algorithm on the 14.45 and 14.47 version.
+
+[![Demo](./images/initial_setup.png)](https://www.youtube.com/watch?v=gBxnxu9r73A)
+
 ## Introduction
 
 The provided algorithm simulates a predator-prey ecosystem within a grid environment, where wolves (predators) and sheep (prey) interact with each other and with their environment, represented by grass. This simulation is a simplified model of real-world ecological dynamics, capturing essential aspects like **reproduction, starvation, and overcrowding**.
