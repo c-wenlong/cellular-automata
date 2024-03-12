@@ -2,7 +2,7 @@
 
 ## Important Note
 
-The algo runs much better in the 14.45 version of the Turtles System than the 14.47 version of the Turtles System, for reasons unknown to me. Here, there is a demo of the algorithm on the 14.45 and 14.47 version. Click on the image to redirect to the YouTube video, or check it out at ![DEMO](https://www.youtube.com/watch?v=gBxnxu9r73A)
+The algo runs much better in the 14.45 version of the Turtles System than the 14.47 version of the Turtles System, for reasons unknown to me. Here, there is a demo of the algorithm on the 14.45 and 14.47 version. Click on the image to redirect to the YouTube video, or check it out at [DEMO](https://www.youtube.com/watch?v=gBxnxu9r73A)
 
 [![Demo](./images/initial_setup.png)](https://www.youtube.com/watch?v=gBxnxu9r73A)
 
