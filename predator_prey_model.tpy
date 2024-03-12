@@ -1,6 +1,6 @@
 # Set up map dimensions and colors
-width=15
-height=15
+width=10
+height=10
 wolf=black
 sheep=white
 grass=darkgreen
@@ -11,14 +11,17 @@ num_sheep=0
 
 # Set up probabilities (change it as you like to see different simulations)
 wolf_initial_spawn=10 # Probability of initially spawning wolf
-sheep_initial_spawn=25 # Probability of initially spawning sheep
+sheep_initial_spawn=40 # Probability of initially spawning sheep
 
-wolf_reproduction_prob=10  # Probability of wolf reproduction
-sheep_reproduction_prob=15  # Probability of sheep reproduction
-wolf_starvation_chance=15  # Chance of wolf dying if not eating
-sheep_starvation_chance=5  # Chance of sheep dying if not eating
+wolf_reproduction_prob=100  # Probability of wolf reproduction
+sheep_reproduction_prob=50  # Probability of sheep reproduction
+wolf_starvation_chance=80  # Chance of wolf dying if not eating
+sheep_starvation_chance=10  # Chance of sheep dying if not eating
 
 overcrowding_death=True # True if overcrowding can cause deaths
+
+random_walk_wolf=20 # Probability of wolf not eating an adjacent sheep 
+random_walk_sheep=10 # Probability of sheep not eating an adjacent grass
 
 # Initialize map
 canvas(0, 0, width, height)
@@ -38,10 +41,6 @@ for x in range(width):
         else:
             pixset(x, y, grass)
 update()
-
-# Temp variables because we cannot return lists
-coord_X=0
-coord_Y=0
 
 # Helper function to check if there are any adjacent targets
 def has_adjacent(x, y, target):
@@ -75,13 +74,12 @@ def set_adjacent(x, y, target, source):
                     y_coords.append(ny)
                     size+=1
     if(size==-1):
-        return False
+        return False # no source found
+        
     index=randrange(size)
     new_X=x_coords[index]
     new_Y=y_coords[index]
     pixset(new_X, new_Y, target) # set new state
-    coord_X=new_X
-    coord_Y=new_Y
     return True
 
 
@@ -123,7 +121,7 @@ while (num_sheep > 0) and (num_wolves > 0): # while there are still wolves or sh
             continue
 
         # If there is no food nearby (no sheep), wolf may die from starvation
-        if (not has_adjacent(x, y, sheep)): # check for starvation
+        if (not has_adjacent(x, y, sheep)) or (randrange(100) < random_walk_wolf): # check for starvation
             if (randrange(100) < wolf_starvation_chance):
                 num_wolves -= 1
             else:
@@ -134,11 +132,9 @@ while (num_sheep > 0) and (num_wolves > 0): # while there are still wolves or sh
             num_sheep -= 1
             
             # reproduction need to be WRT new position (to be changed later)
-            if has_adjacent(coord_X, coord_Y, wolf): # since there is food, the wolf can try to reproduce with another wolf nearby
-                if (randrange(100) < wolf_reproduction_prob) and has_adjacent(x, y, grass): # if reproduction successful and there is empty grass
-                    success = set_adjacent(x, y, wolf, grass)
-                    if success:
-                        num_wolves += 1
+            if (randrange(100) < wolf_reproduction_prob) and has_adjacent(x, y, grass): # if reproduction successful and there is empty grass
+                pixset(x, y, wolf)
+                num_wolves += 1
         # print(cycle, ": ","wolves :", num_wolves,", sheep: ",num_sheep)
          
     # If it's a sheep, it may eat grass (and reproduce) or die from starvation
@@ -151,7 +147,7 @@ while (num_sheep > 0) and (num_wolves > 0): # while there are still wolves or sh
             num_sheep -= 1
             continue
             
-        if (not has_adjacent(x, y, grass)): # if no food nearby, sheep may starve to death
+        if (not has_adjacent(x, y, grass)) or (randrange(100) < random_walk_sheep ): # if no food nearby, sheep may starve to death
             # this is different from wolf because grass is also a movable block for sheep, if no grass, then it cannot move anywhere, although this should have already been taken care of by overcrowding check earlier
             if randrange(100) < sheep_starvation_chance: # Check for starvation
                 num_sheep -= 1
@@ -163,9 +159,8 @@ while (num_sheep > 0) and (num_wolves > 0): # while there are still wolves or sh
             
             # if reproduction successful and there is empty grass
             if (randrange(100) < sheep_reproduction_prob) and has_adjacent(x, y, grass):
-                success = set_adjacent(coord_X, coord_Y, sheep, grass) # set grass to become sheep after reproduction
-                if success:
-                    num_sheep += 1
+                pixset(x, y, sheep)
+                num_sheep += 1
         # print(cycle, ": ","wolves :", num_wolves,", sheep: ",num_sheep)
          
     cycle += 1
